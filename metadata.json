@@ -1,0 +1,5 @@
+{
+  "name": "AI Research Analyst",
+  "description": "An AI-powered research assistant capable of web search, PDF analysis, and generating executive summaries with citation tracking.",
+  "requestFramePermissions": []
+}
