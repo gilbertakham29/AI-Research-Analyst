@@ -94,7 +94,7 @@ export const generateResearchResponse = async (
     let tools: any[] | undefined = undefined;
 
     if (mode === 'deep') {
-        modelName = 'gemini-3-flash';
+        modelName = 'gemini-2.5-flash-preview-09-2025';
         tools = [{ googleSearch: {} }];
     } else if (mode === 'web') {
         modelName = 'gemini-2.5-flash';
