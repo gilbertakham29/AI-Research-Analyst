@@ -1,26 +1,8 @@
-// services/geminiService.ts
 import { GoogleGenAI, Content, Part } from "@google/genai";
 import { Message, GroundingChunk, ModelMode, Attachment, Evidence } from "../types";
 
-// Use process.env for Node.js environment or Vite's import.meta.env
-const getApiKey = (): string => {
-  if (typeof process !== 'undefined' && process.env) {
-    // Node.js environment
-    return process.env.VITE_API_KEY || process.env.GEMINI_API_KEY || '';
-  } else {
-    // Vite/Browser environment
-    return (import.meta as any).env?.VITE_API_KEY || '';
-  }
-};
-
 // Initialize the client
-const apiKey = getApiKey();
-
-if (!apiKey) {
-  console.error('Gemini API key is not defined. Please set VITE_API_KEY environment variable.');
-}
-
-const ai = new GoogleGenAI({ apiKey });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const getSystemInstruction = (mode: ModelMode) => {
   const base = `You are a rigorous AI Research Analyst. Your core directive is **EVIDENCE-BASED SYNTHESIS**.\n\n`;
@@ -83,10 +65,6 @@ export const generateResearchResponse = async (
   mode: ModelMode
 ): Promise<{ text: string; groundingChunks: GroundingChunk[]; evidence: Evidence[] }> => {
   
-  if (!apiKey) {
-    throw new Error('Gemini API key is not configured. Please check your environment variables.');
-  }
-
   try {
     // Convert previous chat history
     const historyContents: Content[] = history.map((msg) => ({
