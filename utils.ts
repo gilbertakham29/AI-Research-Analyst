@@ -48,7 +48,7 @@ const getApiKey = (): string => {
   
   // Fallback for Node.js/SSR environment
   if (typeof process !== 'undefined' && process.env) {
-    return process.env.API_KEY || '';
+    return process.env.VITE_API_KEY || '';
   }
   
   return '';
