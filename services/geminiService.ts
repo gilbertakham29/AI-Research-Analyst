@@ -6,10 +6,10 @@ import { Message, GroundingChunk, ModelMode, Attachment, Evidence } from "../typ
 const getApiKey = (): string => {
   if (typeof process !== 'undefined' && process.env) {
     // Node.js environment
-    return process.env.API_KEY || process.env.GEMINI_API_KEY || '';
+    return process.env.VITE_API_KEY || process.env.GEMINI_API_KEY || '';
   } else {
     // Vite/Browser environment
-    return (import.meta as any).env?.API_KEY || '';
+    return (import.meta as any).env?.VITE_API_KEY || '';
   }
 };
 
