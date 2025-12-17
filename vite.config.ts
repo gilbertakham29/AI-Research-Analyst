@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     define: {
       // Polyfill process.env.API_KEY for the Gemini Service
-      'process.env.API_KEY': JSON.stringify(env.API_KEY)
+      'process.env': {},
     }
   };
 });
