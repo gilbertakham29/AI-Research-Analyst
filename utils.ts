@@ -43,7 +43,7 @@ export const processFiles = async (files: FileList | null): Promise<Attachment[]
 const getApiKey = (): string => {
   // Check for Vite environment first (client-side)
   if (import.meta.env) {
-    return (import.meta as any).env?.API_KEY || '';
+    return (import.meta as any).env?.VITE_API_KEY || '';
   }
   
   // Fallback for Node.js/SSR environment
