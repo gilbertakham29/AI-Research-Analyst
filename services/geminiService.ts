@@ -2,7 +2,7 @@ import { GoogleGenAI, Content, Part } from "@google/genai";
 import { Message, GroundingChunk, ModelMode, Attachment, Evidence } from "../types";
 
 // Initialize the client
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey: import.meta.env.API_KEY });
 
 const getSystemInstruction = (mode: ModelMode) => {
   const base = `You are a rigorous AI Research Analyst. Your core directive is **EVIDENCE-BASED SYNTHESIS**.\n\n`;
