@@ -37,3 +37,21 @@ export const processFiles = async (files: FileList | null): Promise<Attachment[]
   }
   return attachments;
 };
+// utils/env.ts
+// This handles both Node.js and Vite environments
+
+const getApiKey = (): string => {
+  // Check for Vite environment first (client-side)
+  if (import.meta.env) {
+    return (import.meta as any).env?.API_KEY || '';
+  }
+  
+  // Fallback for Node.js/SSR environment
+  if (typeof process !== 'undefined' && process.env) {
+    return process.env.API_KEY || '';
+  }
+  
+  return '';
+};
+
+export { getApiKey };
