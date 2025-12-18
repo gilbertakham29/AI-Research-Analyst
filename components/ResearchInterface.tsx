@@ -134,14 +134,14 @@ How can I assist your research today?`,
   const renderFormattedText = (text: string) => {
     return text.split('\n').map((line, i) => {
       // Headers
-      if (line.startsWith('### ')) return <h3 key={i} className="text-lg font-bold mt-4 mb-2 text-slate-800 dark:text-sky-100">{line.replace('### ', '')}</h3>;
-      if (line.startsWith('## ')) return <h2 key={i} className="text-xl font-bold mt-6 mb-3 text-slate-900 dark:text-sky-200">{line.replace('## ', '')}</h2>;
-      if (line.startsWith('# ')) return <h1 key={i} className="text-2xl font-bold mt-6 mb-4 text-slate-950 dark:text-sky-300">{line.replace('# ', '')}</h1>;
+      if (line.startsWith('### ')) return <h3 key={i} className="text-lg font-bold mt-4 mb-2 text-slate-800 dark:text-sky-100 break-words">{line.replace('### ', '')}</h3>;
+      if (line.startsWith('## ')) return <h2 key={i} className="text-xl font-bold mt-6 mb-3 text-slate-900 dark:text-sky-200 break-words">{line.replace('## ', '')}</h2>;
+      if (line.startsWith('# ')) return <h1 key={i} className="text-2xl font-bold mt-6 mb-4 text-slate-950 dark:text-sky-300 break-words">{line.replace('# ', '')}</h1>;
       
       // Bullets
       if (line.trim().startsWith('* ') || line.trim().startsWith('- ')) {
         return (
-          <li key={i} className="ml-4 pl-2 list-disc marker:text-sky-500 dark:marker:text-sky-400">
+          <li key={i} className="ml-4 pl-2 list-disc marker:text-sky-500 dark:marker:text-sky-400 break-words">
              <span dangerouslySetInnerHTML={{ __html: line.replace(/^[\*-]\s/, '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
           </li>
         );
@@ -151,15 +151,15 @@ How can I assist your research today?`,
       if (line.trim() === '') return <div key={i} className="h-2"></div>;
       
       return (
-        <p key={i} className="mb-2 leading-relaxed" dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-900 dark:text-sky-100 font-semibold">$1</strong>') }} />
+        <p key={i} className="mb-2 leading-relaxed break-words" dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-900 dark:text-sky-100 font-semibold break-words">$1</strong>') }} />
       );
     });
   };
 
   return (
-    <div className="flex flex-col h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 font-sans transition-colors duration-200">
+    <div className="flex flex-col h-full w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 font-sans transition-colors duration-200 overflow-hidden">
       {/* Header */}
-      <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 flex items-center px-4 md:px-6 justify-between backdrop-blur-md sticky top-0 z-10 transition-colors duration-200">
+      <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 flex items-center px-4 md:px-6 justify-between backdrop-blur-md sticky top-0 z-10 transition-colors duration-200 shrink-0">
         <div className="flex items-center gap-3">
           <div className="bg-sky-600 p-2 rounded-lg shadow-sm">
             <IconSearch className="w-5 h-5 text-white" />
@@ -184,11 +184,12 @@ How can I assist your research today?`,
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-hidden flex flex-col">
+      <main className="flex-1 overflow-hidden flex flex-col min-h-0">
         
         {/* Chat Area */}
-        <div className="flex-1 flex flex-col h-full">
-          <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+        <div className="flex-1 flex flex-col h-full overflow-hidden">
+          {/* Messages Container - FIXED: Added overflow handling */}
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 space-y-6">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
                 
@@ -196,72 +197,72 @@ How can I assist your research today?`,
                 <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center shrink-0 border dark:border-none shadow-sm ${
                   msg.role === 'user' 
                     ? 'bg-white dark:bg-slate-700 border-slate-200 text-slate-700 dark:text-white' 
-                    : 'bg-[#6366f1] text-white border-transparent' /* Using a purple-ish color for bot to match screenshot */
+                    : 'bg-[#6366f1] text-white border-transparent'
                 }`}>
                   {msg.role === 'user' ? <IconUser className="w-4 h-4 md:w-6 md:h-6" /> : <IconBot className="w-4 h-4 md:w-6 md:h-6" />}
                 </div>
 
                 {/* Bubble */}
-                <div className={`flex flex-col gap-1 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                <div className={`flex flex-col gap-1 max-w-[calc(100%-3rem)] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                   
                   {/* Attachments (Sent by User) */}
                   {msg.attachments && msg.attachments.length > 0 && (
-                     <div className="flex flex-wrap gap-2 mb-2">
+                     <div className="flex flex-wrap gap-2 mb-2 w-full">
                         {msg.attachments.map((att, idx) => (
-                           <div key={idx} className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded p-2 flex items-center gap-2 text-xs shadow-sm">
-                             <IconFileText className="w-3 h-3 md:w-4 md:h-4 text-sky-600 dark:text-sky-400" />
-                             <span className="truncate max-w-[100px] md:max-w-[150px] text-slate-700 dark:text-slate-200">{att.name}</span>
+                           <div key={idx} className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded p-2 flex items-center gap-2 text-xs shadow-sm max-w-full">
+                             <IconFileText className="w-3 h-3 md:w-4 md:h-4 text-sky-600 dark:text-sky-400 shrink-0" />
+                             <span className="truncate text-slate-700 dark:text-slate-200">{att.name}</span>
                            </div>
                         ))}
                      </div>
                   )}
 
                   {/* Message Text */}
-                  <div className={`rounded-2xl text-sm md:text-base shadow-sm transition-colors duration-200 ${
-                    msg.role === 'user' 
-                    ? 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-tr-none border border-slate-200 dark:border-transparent p-3' 
-                    : 'bg-transparent text-slate-800 dark:text-slate-300 rounded-tl-none p-0 shadow-none'
+                  <div className={`rounded-2xl text-sm md:text-base shadow-sm transition-colors duration-200 w-full ${msg.role === 'user' 
+                    ? 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-tr-none border border-slate-200 dark:border-transparent p-3 max-w-full' 
+                    : 'bg-transparent text-slate-800 dark:text-slate-300 rounded-tl-none p-0 shadow-none max-w-full'
                   }`}>
-                    {renderFormattedText(msg.text)}
+                    <div className="break-words overflow-wrap-anywhere">
+                      {renderFormattedText(msg.text)}
+                    </div>
                   </div>
 
-                  {/* EVIDENCE GRAPH COMPONENT - Fixed vertical line issue */}
+                  {/* EVIDENCE GRAPH COMPONENT - Fixed overflow issues */}
                   {msg.evidence && msg.evidence.length > 0 && (
-                    <div className="mt-3 w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-3 md:p-4 shadow-sm">
+                    <div className="mt-3 w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-3 md:p-4 shadow-sm overflow-hidden">
                       <div className="flex items-center gap-2 mb-3 border-b border-slate-200 dark:border-slate-800 pb-2">
-                         <IconGraph className="w-4 h-4 md:w-5 md:h-5 text-sky-600 dark:text-sky-400" />
-                         <span className="text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200 tracking-wide">EVIDENCE GRAPH</span>
-                         <span className="ml-auto text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">{msg.evidence.length} Claims Verified</span>
+                         <IconGraph className="w-4 h-4 md:w-5 md:h-5 text-sky-600 dark:text-sky-400 shrink-0" />
+                         <span className="text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200 tracking-wide truncate">EVIDENCE GRAPH</span>
+                         <span className="ml-auto text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full shrink-0">{msg.evidence.length} Claims</span>
                       </div>
                       
                       <div className="space-y-3">
                         {msg.evidence.map((item, idx) => (
-                           <div key={idx} className="flex flex-col gap-3 p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 hover:border-sky-300 dark:hover:border-sky-700 transition-all">
+                           <div key={idx} className="flex flex-col gap-3 p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 hover:border-sky-300 dark:hover:border-sky-700 transition-all overflow-hidden">
                              {/* Claim Node */}
                              <div className="w-full">
                                <div className="text-xs font-semibold text-slate-400 uppercase mb-1">Claim</div>
-                               <div className="text-sm text-slate-700 dark:text-slate-300">{item.claim}</div>
+                               <div className="text-sm text-slate-700 dark:text-slate-300 break-words">{item.claim}</div>
                              </div>
 
-                             {/* Removed the vertical line container entirely */}
                              {/* Source Node */}
-                             <div className="w-full bg-slate-50 dark:bg-slate-800 rounded p-2 border border-slate-100 dark:border-slate-700">
+                             <div className="w-full bg-slate-50 dark:bg-slate-800 rounded p-2 border border-slate-100 dark:border-slate-700 overflow-hidden">
                                 <div className="flex items-center gap-2 mb-1">
-                                   <div className={`w-2 h-2 rounded-full ${item.sourceType === 'web' ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                                   <div className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase">{item.sourceType} Source</div>
+                                   <div className={`w-2 h-2 rounded-full ${item.sourceType === 'web' ? 'bg-green-500' : 'bg-red-500'} shrink-0`}></div>
+                                   <div className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase truncate">{item.sourceType} Source</div>
                                 </div>
                                 <div className="text-xs font-medium text-slate-800 dark:text-sky-100 truncate" title={item.sourceName}>
                                   {item.sourceName}
                                 </div>
                                 {item.sourceType === 'web' ? (
-                                   <a href={item.sourceReference} target="_blank" rel="noopener noreferrer" className="text-xs text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 mt-1 truncate">
-                                     <IconExternalLink className="w-3 h-3" />
-                                     <span className="truncate">{item.sourceReference}</span>
+                                   <a href={item.sourceReference} target="_blank" rel="noopener noreferrer" className="text-xs text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 mt-1">
+                                     <IconExternalLink className="w-3 h-3 shrink-0" />
+                                     <span className="truncate overflow-hidden">{item.sourceReference}</span>
                                    </a>
                                 ) : (
                                    <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-1">
-                                      <IconFileText className="w-3 h-3" />
-                                      {item.sourceReference}
+                                      <IconFileText className="w-3 h-3 shrink-0" />
+                                      <span className="truncate">{item.sourceReference}</span>
                                    </span>
                                 )}
                              </div>
@@ -273,7 +274,7 @@ How can I assist your research today?`,
 
                   {/* Fallback: Old Grounding Metadata */}
                   {(!msg.evidence || msg.evidence.length === 0) && msg.groundingChunks && msg.groundingChunks.length > 0 && (
-                    <div className="mt-2 w-full">
+                    <div className="mt-2 w-full overflow-hidden">
                       <div className="text-xs font-semibold text-slate-500 dark:text-slate-500 uppercase tracking-wider mb-2">Web Sources</div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         {msg.groundingChunks.map((chunk, idx) => chunk.web ? (
@@ -282,12 +283,12 @@ How can I assist your research today?`,
                             href={chunk.web.uri}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 p-2 md:p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-sky-500 dark:hover:border-sky-600/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group shadow-sm"
+                            className="flex items-center gap-2 p-2 md:p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-sky-500 dark:hover:border-sky-600/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group shadow-sm overflow-hidden"
                           >
-                            <div className="bg-slate-100 dark:bg-slate-800 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 p-1.5 md:p-2 rounded text-slate-500 dark:text-slate-400 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
+                            <div className="bg-slate-100 dark:bg-slate-800 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 p-1.5 md:p-2 rounded text-slate-500 dark:text-slate-400 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors shrink-0">
                                <IconExternalLink className="w-3 h-3 md:w-4 md:h-4" />
                             </div>
-                            <div className="overflow-hidden flex-1">
+                            <div className="overflow-hidden flex-1 min-w-0">
                               <div className="text-sm font-medium text-slate-800 dark:text-sky-100 truncate group-hover:text-sky-700 dark:group-hover:text-sky-300 transition-colors">{chunk.web.title}</div>
                               <div className="text-xs text-slate-500 truncate">{chunk.web.uri}</div>
                             </div>
@@ -310,7 +311,7 @@ How can I assist your research today?`,
                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#6366f1] flex items-center justify-center shrink-0 animate-pulse">
                    <IconBot className="w-4 h-4 md:w-6 md:h-6 text-white" />
                  </div>
-                 <div className="flex flex-col gap-2">
+                 <div className="flex flex-col gap-2 max-w-[calc(100%-3rem)]">
                     <div className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 p-3 rounded-2xl rounded-tl-none w-32 md:w-48 shadow-sm">
                       <div className="flex gap-1 items-center h-6">
                         <span className="w-2 h-2 bg-sky-500 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></span>
@@ -328,7 +329,7 @@ How can I assist your research today?`,
           </div>
 
           {/* Input Area */}
-          <div className="p-3 md:p-6 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
+          <div className="p-3 md:p-6 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shrink-0">
             <div className="max-w-4xl mx-auto">
               <form 
                 onSubmit={handleSubmit}
@@ -346,7 +347,7 @@ How can I assist your research today?`,
                     }
                   }}
                   placeholder="Ask a research question or summarize the PDF..."
-                  className="w-full bg-transparent border-none outline-none text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm md:text-base resize-none overflow-hidden min-h-[40px]"
+                  className="w-full bg-transparent border-none outline-none text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm md:text-base resize-none overflow-hidden min-h-[40px] break-words"
                   rows={1}
                   disabled={isLoading}
                 />
@@ -355,7 +356,7 @@ How can I assist your research today?`,
                 {attachments.length > 0 && (
                   <div className="flex gap-2 overflow-x-auto">
                     {attachments.map((att, idx) => (
-                      <div key={idx} className="relative group flex items-center gap-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-1.5 rounded-lg">
+                      <div key={idx} className="relative group flex items-center gap-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-1.5 rounded-lg shrink-0">
                         <IconFileText className="w-3 h-3 md:w-4 md:h-4 text-sky-600 dark:text-sky-400" />
                         <span className="text-xs text-slate-700 dark:text-slate-300 max-w-[80px] md:max-w-[120px] truncate">{att.name}</span>
                         <button 
@@ -384,7 +385,7 @@ How can I assist your research today?`,
                     <button 
                       type="button" 
                       onClick={() => fileInputRef.current?.click()}
-                      className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
+                      className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors shrink-0"
                       title="Upload PDF"
                     >
                       <IconPaperclip className="w-4 h-4 md:w-5 md:h-5" />
@@ -393,11 +394,11 @@ How can I assist your research today?`,
                     <div className="hidden md:block w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1"></div>
 
                     {/* Mode Chips */}
-                    <div className="flex gap-1 md:gap-2">
+                    <div className="flex gap-1 md:gap-2 flex-wrap">
                       <button
                         type="button"
                         onClick={() => setModelMode('fast')}
-                        className={`flex items-center gap-1 px-2 py-1 md:px-3 md:py-1.5 rounded-full text-xs font-medium border transition-all ${
+                        className={`flex items-center gap-1 px-2 py-1 md:px-3 md:py-1.5 rounded-full text-xs font-medium border transition-all shrink-0 ${
                           modelMode === 'fast'
                             ? 'bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-700 text-amber-600 dark:text-amber-300'
                             : 'bg-transparent border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
@@ -410,20 +411,20 @@ How can I assist your research today?`,
                       <button
                         type="button"
                         onClick={() => setModelMode('web')}
-                        className={`flex items-center gap-1 px-2 py-1 md:px-3 md:py-1.5 rounded-full text-xs font-medium border transition-all ${
+                        className={`flex items-center gap-1 px-2 py-1 md:px-3 md:py-1.5 rounded-full text-xs font-medium border transition-all shrink-0 ${
                           modelMode === 'web'
                             ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-600 dark:text-blue-300'
                             : 'bg-transparent border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
                         }`}
                       >
                         <IconSearch className="w-3 h-3 md:w-3.5 md:h-3.5" />
-                        <span className="hidden sm:inline">Web Search</span>
+                        <span className="hidden sm:inline">Web</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => setModelMode('deep')}
-                        className={`flex items-center gap-1 px-2 py-1 md:px-3 md:py-1.5 rounded-full text-xs font-medium border transition-all ${
+                        className={`flex items-center gap-1 px-2 py-1 md:px-3 md:py-1.5 rounded-full text-xs font-medium border transition-all shrink-0 ${
                           modelMode === 'deep'
                             ? 'bg-purple-50 dark:bg-purple-900/30 border-purple-200 dark:border-purple-700 text-purple-600 dark:text-purple-300'
                             : 'bg-transparent border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
@@ -439,7 +440,7 @@ How can I assist your research today?`,
                   <button 
                     type="submit" 
                     disabled={isLoading || (!input.trim() && attachments.length === 0)}
-                    className={`flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium text-sm transition-all w-full md:w-auto justify-center ${
+                    className={`flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium text-sm transition-all w-full md:w-auto justify-center shrink-0 ${
                       input.trim() || attachments.length > 0 
                         ? 'bg-slate-200 hover:bg-slate-300 text-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-200'
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'
