@@ -157,14 +157,14 @@ How can I assist your research today?`,
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 font-sans transition-colors duration-200">
+    <div className="flex flex-col h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 font-sans transition-colors duration-200">
       {/* Header */}
       <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 flex items-center px-4 md:px-6 justify-between backdrop-blur-md sticky top-0 z-10 transition-colors duration-200">
         <div className="flex items-center gap-3">
           <div className="bg-sky-600 p-2 rounded-lg shadow-sm">
             <IconSearch className="w-5 h-5 text-white" />
           </div>
-          <div className="hidden sm:block">
+          <div className="block">
             <h1 className="font-semibold text-lg tracking-tight text-slate-900 dark:text-white">Research Analyst</h1>
             <p className="text-xs text-slate-500 dark:text-slate-400">Powered by Gemini</p>
           </div>
@@ -184,73 +184,68 @@ How can I assist your research today?`,
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-hidden relative flex flex-row">
+      <main className="flex-1 overflow-hidden flex flex-col">
         
         {/* Chat Area */}
-        <div className="flex-1 flex flex-col h-full relative">
-          <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
+        <div className="flex-1 flex flex-col h-full">
+          <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
             {messages.map((msg) => (
-              <div key={msg.id} className={`flex gap-4 max-w-5xl mx-auto ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
+              <div key={msg.id} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
                 
-                {/* Avatar */}
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border dark:border-none shadow-sm ${
+                {/* Avatar - Hide on very small screens */}
+                <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center shrink-0 border dark:border-none shadow-sm ${
                   msg.role === 'user' 
                     ? 'bg-white dark:bg-slate-700 border-slate-200 text-slate-700 dark:text-white' 
                     : 'bg-[#6366f1] text-white border-transparent' /* Using a purple-ish color for bot to match screenshot */
                 }`}>
-                  {msg.role === 'user' ? <IconUser className="w-6 h-6" /> : <IconBot className="w-6 h-6" />}
+                  {msg.role === 'user' ? <IconUser className="w-4 h-4 md:w-6 md:h-6" /> : <IconBot className="w-4 h-4 md:w-6 md:h-6" />}
                 </div>
 
                 {/* Bubble */}
-                <div className={`flex flex-col gap-2 max-w-[90%] md:max-w-[85%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                <div className={`flex flex-col gap-1 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                   
                   {/* Attachments (Sent by User) */}
                   {msg.attachments && msg.attachments.length > 0 && (
                      <div className="flex flex-wrap gap-2 mb-2">
                         {msg.attachments.map((att, idx) => (
                            <div key={idx} className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded p-2 flex items-center gap-2 text-xs shadow-sm">
-                             <IconFileText className="w-4 h-4 text-sky-600 dark:text-sky-400" />
-                             <span className="truncate max-w-[150px] text-slate-700 dark:text-slate-200">{att.name}</span>
+                             <IconFileText className="w-3 h-3 md:w-4 md:h-4 text-sky-600 dark:text-sky-400" />
+                             <span className="truncate max-w-[100px] md:max-w-[150px] text-slate-700 dark:text-slate-200">{att.name}</span>
                            </div>
                         ))}
                      </div>
                   )}
 
                   {/* Message Text */}
-                  <div className={`p-4 rounded-2xl text-sm md:text-base shadow-sm transition-colors duration-200 ${
+                  <div className={`rounded-2xl text-sm md:text-base shadow-sm transition-colors duration-200 ${
                     msg.role === 'user' 
-                    ? 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-tr-none border border-slate-200 dark:border-transparent' 
-                    : 'bg-transparent text-slate-800 dark:text-slate-300 rounded-tl-none px-0 py-0 shadow-none'
+                    ? 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-tr-none border border-slate-200 dark:border-transparent p-3' 
+                    : 'bg-transparent text-slate-800 dark:text-slate-300 rounded-tl-none p-0 shadow-none'
                   }`}>
                     {renderFormattedText(msg.text)}
                   </div>
 
-                  {/* EVIDENCE GRAPH COMPONENT */}
+                  {/* EVIDENCE GRAPH COMPONENT - Fixed vertical line issue */}
                   {msg.evidence && msg.evidence.length > 0 && (
-                    <div className="mt-4 w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
+                    <div className="mt-3 w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-3 md:p-4 shadow-sm">
                       <div className="flex items-center gap-2 mb-3 border-b border-slate-200 dark:border-slate-800 pb-2">
-                         <IconGraph className="w-5 h-5 text-sky-600 dark:text-sky-400" />
-                         <span className="text-sm font-bold text-slate-800 dark:text-slate-200 tracking-wide">EVIDENCE GRAPH</span>
+                         <IconGraph className="w-4 h-4 md:w-5 md:h-5 text-sky-600 dark:text-sky-400" />
+                         <span className="text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200 tracking-wide">EVIDENCE GRAPH</span>
                          <span className="ml-auto text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">{msg.evidence.length} Claims Verified</span>
                       </div>
                       
                       <div className="space-y-3">
                         {msg.evidence.map((item, idx) => (
-                           <div key={idx} className="flex flex-col md:flex-row gap-3 p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 hover:border-sky-300 dark:hover:border-sky-700 transition-all">
+                           <div key={idx} className="flex flex-col gap-3 p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 hover:border-sky-300 dark:hover:border-sky-700 transition-all">
                              {/* Claim Node */}
-                             <div className="flex-1">
+                             <div className="w-full">
                                <div className="text-xs font-semibold text-slate-400 uppercase mb-1">Claim</div>
                                <div className="text-sm text-slate-700 dark:text-slate-300">{item.claim}</div>
                              </div>
 
-                             {/* Connection Line (Visual Only for Desktop) */}
-                             <div className="hidden md:flex flex-col items-center justify-center px-2">
-                                <div className="w-px h-full bg-slate-200 dark:bg-slate-700 absolute top-0 bottom-0"></div>
-                                <div className="w-16 h-px bg-slate-300 dark:bg-slate-600"></div>
-                             </div>
-
+                             {/* Removed the vertical line container entirely */}
                              {/* Source Node */}
-                             <div className="flex-1 md:max-w-[40%] bg-slate-50 dark:bg-slate-800 rounded p-2 border border-slate-100 dark:border-slate-700">
+                             <div className="w-full bg-slate-50 dark:bg-slate-800 rounded p-2 border border-slate-100 dark:border-slate-700">
                                 <div className="flex items-center gap-2 mb-1">
                                    <div className={`w-2 h-2 rounded-full ${item.sourceType === 'web' ? 'bg-green-500' : 'bg-red-500'}`}></div>
                                    <div className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase">{item.sourceType} Source</div>
@@ -261,7 +256,7 @@ How can I assist your research today?`,
                                 {item.sourceType === 'web' ? (
                                    <a href={item.sourceReference} target="_blank" rel="noopener noreferrer" className="text-xs text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 mt-1 truncate">
                                      <IconExternalLink className="w-3 h-3" />
-                                     {item.sourceReference}
+                                     <span className="truncate">{item.sourceReference}</span>
                                    </a>
                                 ) : (
                                    <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-1">
@@ -287,12 +282,12 @@ How can I assist your research today?`,
                             href={chunk.web.uri}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-3 p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-sky-500 dark:hover:border-sky-600/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group shadow-sm"
+                            className="flex items-center gap-2 p-2 md:p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-sky-500 dark:hover:border-sky-600/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group shadow-sm"
                           >
-                            <div className="bg-slate-100 dark:bg-slate-800 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 p-2 rounded text-slate-500 dark:text-slate-400 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
-                               <IconExternalLink className="w-4 h-4" />
+                            <div className="bg-slate-100 dark:bg-slate-800 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 p-1.5 md:p-2 rounded text-slate-500 dark:text-slate-400 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
+                               <IconExternalLink className="w-3 h-3 md:w-4 md:h-4" />
                             </div>
-                            <div className="overflow-hidden">
+                            <div className="overflow-hidden flex-1">
                               <div className="text-sm font-medium text-slate-800 dark:text-sky-100 truncate group-hover:text-sky-700 dark:group-hover:text-sky-300 transition-colors">{chunk.web.title}</div>
                               <div className="text-xs text-slate-500 truncate">{chunk.web.uri}</div>
                             </div>
@@ -302,7 +297,7 @@ How can I assist your research today?`,
                     </div>
                   )}
                   
-                  <span className="text-xs text-slate-400 dark:text-slate-600 px-1">
+                  <span className="text-xs text-slate-400 dark:text-slate-600 px-1 mt-1">
                     {new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                   </span>
                 </div>
@@ -311,12 +306,12 @@ How can I assist your research today?`,
             
             {/* Loading Indicator */}
             {isLoading && (
-               <div className="flex gap-4 max-w-5xl mx-auto">
-                 <div className="w-10 h-10 rounded-full bg-[#6366f1] flex items-center justify-center shrink-0 animate-pulse">
-                   <IconBot className="w-6 h-6 text-white" />
+               <div className="flex gap-3">
+                 <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#6366f1] flex items-center justify-center shrink-0 animate-pulse">
+                   <IconBot className="w-4 h-4 md:w-6 md:h-6 text-white" />
                  </div>
                  <div className="flex flex-col gap-2">
-                    <div className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl rounded-tl-none w-48 shadow-sm">
+                    <div className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 p-3 rounded-2xl rounded-tl-none w-32 md:w-48 shadow-sm">
                       <div className="flex gap-1 items-center h-6">
                         <span className="w-2 h-2 bg-sky-500 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></span>
                         <span className="w-2 h-2 bg-sky-500 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></span>
@@ -332,12 +327,12 @@ How can I assist your research today?`,
             <div ref={messagesEndRef} />
           </div>
 
-          {/* New Input Area Design */}
-          <div className="p-4 md:p-6 bg-slate-50 dark:bg-slate-950 sticky bottom-0 z-20 transition-colors duration-200">
+          {/* Input Area */}
+          <div className="p-3 md:p-6 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
             <div className="max-w-4xl mx-auto">
               <form 
                 onSubmit={handleSubmit}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-lg shadow-slate-200/50 dark:shadow-none flex flex-col gap-4 relative"
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl md:rounded-2xl p-3 md:p-4 shadow-sm flex flex-col gap-3 md:gap-4"
               >
                 {/* Text Area */}
                 <textarea
@@ -351,7 +346,7 @@ How can I assist your research today?`,
                     }
                   }}
                   placeholder="Ask a research question or summarize the PDF..."
-                  className="w-full bg-transparent border-none outline-none text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-base resize-none overflow-hidden min-h-[40px]"
+                  className="w-full bg-transparent border-none outline-none text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm md:text-base resize-none overflow-hidden min-h-[40px]"
                   rows={1}
                   disabled={isLoading}
                 />
@@ -360,15 +355,15 @@ How can I assist your research today?`,
                 {attachments.length > 0 && (
                   <div className="flex gap-2 overflow-x-auto">
                     {attachments.map((att, idx) => (
-                      <div key={idx} className="relative group flex items-center gap-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg">
-                        <IconFileText className="w-4 h-4 text-sky-600 dark:text-sky-400" />
-                        <span className="text-xs text-slate-700 dark:text-slate-300 max-w-[120px] truncate">{att.name}</span>
+                      <div key={idx} className="relative group flex items-center gap-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-1.5 rounded-lg">
+                        <IconFileText className="w-3 h-3 md:w-4 md:h-4 text-sky-600 dark:text-sky-400" />
+                        <span className="text-xs text-slate-700 dark:text-slate-300 max-w-[80px] md:max-w-[120px] truncate">{att.name}</span>
                         <button 
                           type="button"
                           onClick={() => removeAttachment(idx)}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
+                          className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
                         >
-                          <IconX className="w-3 h-3" />
+                          <IconX className="w-2 h-2 md:w-3 md:h-3" />
                         </button>
                       </div>
                     ))}
@@ -376,8 +371,8 @@ How can I assist your research today?`,
                 )}
 
                 {/* Toolbar */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+                  <div className="flex items-center gap-1 md:gap-3 flex-wrap">
                     {/* File Upload */}
                     <input 
                       type="file" 
@@ -392,71 +387,71 @@ How can I assist your research today?`,
                       className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
                       title="Upload PDF"
                     >
-                      <IconPaperclip className="w-5 h-5" />
+                      <IconPaperclip className="w-4 h-4 md:w-5 md:h-5" />
                     </button>
 
-                    <div className="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block"></div>
+                    <div className="hidden md:block w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1"></div>
 
-                    {/* Fast Mode Chip */}
-                    <button
-                      type="button"
-                      onClick={() => setModelMode('fast')}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                        modelMode === 'fast'
-                          ? 'bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-700 text-amber-600 dark:text-amber-300'
-                          : 'bg-transparent border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
-                      }`}
-                    >
-                      <IconZap className="w-3.5 h-3.5" />
-                      Fast
-                    </button>
+                    {/* Mode Chips */}
+                    <div className="flex gap-1 md:gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setModelMode('fast')}
+                        className={`flex items-center gap-1 px-2 py-1 md:px-3 md:py-1.5 rounded-full text-xs font-medium border transition-all ${
+                          modelMode === 'fast'
+                            ? 'bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-700 text-amber-600 dark:text-amber-300'
+                            : 'bg-transparent border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                        }`}
+                      >
+                        <IconZap className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                        <span className="hidden sm:inline">Fast</span>
+                      </button>
 
-                    {/* Web Search Chip */}
-                    <button
-                      type="button"
-                      onClick={() => setModelMode('web')}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                        modelMode === 'web'
-                          ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-600 dark:text-blue-300'
-                          : 'bg-transparent border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
-                      }`}
-                    >
-                      <IconSearch className="w-3.5 h-3.5" />
-                      Web Search
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => setModelMode('web')}
+                        className={`flex items-center gap-1 px-2 py-1 md:px-3 md:py-1.5 rounded-full text-xs font-medium border transition-all ${
+                          modelMode === 'web'
+                            ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-600 dark:text-blue-300'
+                            : 'bg-transparent border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                        }`}
+                      >
+                        <IconSearch className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                        <span className="hidden sm:inline">Web Search</span>
+                      </button>
 
-                    {/* Deep Analysis Chip */}
-                    <button
-                      type="button"
-                      onClick={() => setModelMode('deep')}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                        modelMode === 'deep'
-                          ? 'bg-purple-50 dark:bg-purple-900/30 border-purple-200 dark:border-purple-700 text-purple-600 dark:text-purple-300'
-                          : 'bg-transparent border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
-                      }`}
-                    >
-                      <IconChart className="w-3.5 h-3.5" />
-                      Deep Analysis
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => setModelMode('deep')}
+                        className={`flex items-center gap-1 px-2 py-1 md:px-3 md:py-1.5 rounded-full text-xs font-medium border transition-all ${
+                          modelMode === 'deep'
+                            ? 'bg-purple-50 dark:bg-purple-900/30 border-purple-200 dark:border-purple-700 text-purple-600 dark:text-purple-300'
+                            : 'bg-transparent border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                        }`}
+                      >
+                        <IconChart className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                        <span className="hidden sm:inline">Deep</span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Research Button */}
                   <button 
                     type="submit" 
                     disabled={isLoading || (!input.trim() && attachments.length === 0)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all ml-auto sm:ml-0 ${
+                    className={`flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium text-sm transition-all w-full md:w-auto justify-center ${
                       input.trim() || attachments.length > 0 
                         ? 'bg-slate-200 hover:bg-slate-300 text-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-200'
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed'
                     }`}
                   >
-                    <span className="hidden sm:inline">Research</span>
-                    <IconSend className="w-4 h-4" />
+                    <span>Research</span>
+                    <IconSend className="w-3 h-3 md:w-4 md:h-4" />
                   </button>
                 </div>
               </form>
               
-              <div className="text-center mt-3">
+              <div className="text-center mt-2 md:mt-3">
                  <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
                    Gemini 2.5/Pro • Citations included • PDFs supported
                  </p>
